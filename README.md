@@ -1,17 +1,15 @@
 # Standard-Plane Classification in US Liver Image Sequences
 
-A novel screening protocol of the liver with ultrasound (US) imaging devices is currently being proposed by SIRM
-(the italian society of medical radiology), in collaboration with Esaote (company producing medical devices).
-The protocol is based on a set of 5 standardized probe movements, hence providing a same number of US videos which 
-represent scans of single liver parts. The operator - commonly a nurse - should detect the most informative images 
+The goal of this project is to propose a method to automatically detect and classify standard planes (SP)
+in liver ultrasound (US) videos. The operator - commonly a nurse - should detect the most informative images 
 within each US video, in order to later provide them to physicians for diagnostic purposes. Such frames are known as 
 standard planes and are identified by the presence of specific anatomical structures within the image. 
 Given the nature of this imaging technique (being highly noisy and subject to device settings and manual skills of 
 the operator) and the resulting challenge of recognizing anatomical structures (often not clearly visible even by expert 
-physicians), the standard plane detection task is non-trivial and strongly operator dependent. Nonetheless, 
+physicians), the standard plane detection task is non-trivial and strongly operator-dependent. Nonetheless, 
 one aspect that seems to aid expert users is the temporal evolution of the data within the performed motion scan 
 (combined with some prior background knowledge of human anatomy). Our aim is hence to develop a deep learning pipeline 
-for the automatic classification of single frames (standard planes) within US image sequences.  
+for the automatic classification SP from single frames and sequences of frames within US videos.  
 
 We start by following a 2D approach with a 2D CNN architecture named SonoNet [[1]](#1), which proved to achieve 
 state-of-the-art results on US fetal standard plane detection task. As a first later approach concerning the usage of time information, 
@@ -20,8 +18,8 @@ Specifically, we implemented a 3D extension of the mentioned SonoNet architectur
 to the third (temporal) domain should aid the network in solving ambiguous situations where some parts of anatomical 
 structures are not clearly visible (or partly occluded) within a single frame, though could appear in nearby frames.
 Based on [[2]](#2) we also implemented SonoNet(2+1)D model. It is a 3D version of SonoNet2D, but each 2D convolution layers
-is replaced with a SpatioTemporal block, which consists of 2D convolution layer followed by a 1D convolution layer, with a ReLU activation function between these two layers.
-In this way we have a model which is comparable to the SonoNet2D, in terms of trainable parameters, but with a number of non-linear operations which is the double respect with the 3D model, 
+is replaced with a SpatioTemporal block, which consists of 2D convolution layer followed by a 1D convolution layer.
+In this way, we have a model which is comparable to the SonoNet2D, in terms of trainable parameters, but with a number of non-linear operations which is double with respect to the 3D model, 
 potentially leading to best results. 
 
 
@@ -29,113 +27,16 @@ potentially leading to best results.
 
 ------
 
-## Dataset Information
-
-The dataset we adopt is made of US videos acquired during liver screening sessions performed by various (undefined) 
-number of operators from 4 different acquisition centres. Videos have been annotated with bounding boxes surrounding 
-11 interesting anatomical structures (plus an additional generic "Altro" box):
-
-    Cuore
-    Vena Cava
-    Rene
-    Fine fegato
-    Stomaco
-    Ilo
-    Colecisti
-    Diramazione sovraepatiche
-    Diramazione Porta
-    Ramo dx. Porta
-    Ramo sx. Porta
-
-The current version of the dataset comprises 2093 videos (>350k images) from 413 patients. 
-Videos have a different number of frames, and all frames have a resolution of 1200x760.
-Of all such exams, 1845 are coherently annotated with bounding boxes, 241 have some polygonal-shaped annotations, and 
-7 are not annotated. The last 7 exams are later excluded, while for the 241 videos, the box coordinates are obtained 
-from each polygon (by building the smallest box enclosing such a polygon).
-
-As mentioned before, the protocol requires 5 scans (hence 5 US videos) per patient, although this is not always the case
-for all of them. Specifically:
-- 116 videos correspond to incomplete or over-complete exams (i.e. 33 patients): 10 patients (65 videos) have more 
-than 5 exams (6, 7, or 10), and 23 (51 videos) have fewer (from 1 to 4).
-- 20 additional incomplete exams (5 patients) due to missing correspondences of such videos in the actual dataset.
-- 77 videos have no information on the patient (7 of which have no annotations and are therefore completely excluded).
-- 1880 videos remain, for which the corresponding 375 patients have all 5 exams.
-
-Therefore, the full dataset is made of 2086 videos (116+20+77-7+1880) from 413 patients (some have no patient info).
-Therefore, by using a 15% test split, we end up with 56 patients with complete exams (280 videos) in the test set,
-and 320 complete (1600 videos) plus 37 incomplete/over-complete/missing-patient (206 videos) in the training set.
-Note that no information is available on the specific type of scan each video represents.
-
-------
-
-------
-
-## Classes Description
-
-The current (rough) version of the protocol defines 6 main image classes based on the presence of specific 
-anatomical structures within a frame. The rules for defining these 6 standard planes are the following:
-
-    0 - "diramazione-porta": Simultaneous presence of at least two of the landmarks "Ramo dx Porta", "Ramo sx Porta", 
-        and "Dir. Porta". It represents the starting point of the first three scans. They will not be so distinguishable
-        but labels are too noisy to go into detail.
-
-    1 - "confluenza-sovraepatiche": Simultaneous presence of "Vena cava" and at least one "Dir. Sovraepatiche" landmark.
-
-    2 - "rapporto-epatorenale": Presence of the landmark "Rene".
-
-    3 - "cuore": Presence of the landmark "Cuore". If in co-presence with the class "confluenza-sovraepatiche", the 
-        latter wins.
-
-    4 - "colecisti": Lonely presence of the landmark "Colecisti". As for the previous label, if there's another valid 
-        standard plane, the latter wins.
-
-    5 - "ilo": Presence of the landmark "Ilo".
-
-    6 - "other": All images that don't satisfy any of the previous conditions.
-
-------
-
-------
-
 ## Code Organization
 
-The project is divided in 2 folders:
+The project is divided into 2 folders:
 
-- **<u>data</u>**: prepare data for 2D and 3D model training starting from the raw US liver dataset.
+- **<u>data</u>**: prepare data for 2D and 3D model training starting from the raw US dataset.
 - **<u>models</u>**: define and train 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions.
 
 Let's see them in more detail:
-
-### **<u>data</u>**
-This folder contains all scripts for preparing the dataset and viewing some statistics. 
-The raw dataset must be contained in 2 folders **<em>videos</em>** and **<em>annotations</em>** within the directory 
-**<em>data_directory</em>**. The first (videos) folder should contain N folders (one per video) 
-denominated as {date of acquisition}-{video id}_NOVERLAY-000 (e.g. 20220323-6378366256915869660_NOVERLAY-000) and such 
-folders should contain PNG images having the same name of the folder but with the last 3 digits representing the frame 
-number within the sequence (e.g. 20220323-6378366256915869660_NOVERLAY-023 for the 24th frame). The second (annotations) 
-folder, instead, should contain N files XML (one per video), denominated as {annotation id}.xml (e.g. 371.xml); the 
-corresponding video (i.e. the video id corresponding to such annotation id) should be specified within the XML file.
-There must also be an **<em>exams.json</em>** file, containing a list of lists dividing videos (their id) based on the patient 
-from which they were obtained.
-
 Scripts must be executed in the following order:
 
-> - **_0-explore-data.py_**: this script reads XML annotation files of all videos and creates two CSV files 
-> "infos.csv" and "tracks.csv" in **<em>data_directory/summary</em>**. Such files summarize all 
-> annotations and exams information (for valid data only, e.g. videos without annotations are discarded and not included 
-> in the CSV summary). The script also generates some plots of data statistics and stores information on some issues 
-> within the data.
-> - **_1-split-traintest.py_**: split the data in train and test sets within **<em>data_directory/split</em>**. 
-> We put in the test set the last 15% of patients (in chronological order and having all 5 scans expected in the protocol) 
-> from all 4 clinical centers (Aquila, Firenze, Palermo, Sassari). All the remaining data goes in the training set. 
-> Read the "Dataset Information" section above for more details. Note that this script only creates 2 CSV files named
-> **<em>train-infos.csv</em>** and **<em>test-infos.csv</em>** (storing all information required to retrieve videos and 
-> annotations from the two sets) within the directory **<em>data_directory/split</em>**, actual 
-> data is then replicated from the next script divided in **<em>train</em>** and **<em>test</em>** folders.
-> - **_2-split-classes.py_**: populates **<em>train</em>** and **<em>test</em>** folders within **<em>data_directorysplit</em>**.
-> Each of them contains 3 folders: **<em>videos</em>** (where each exam is a video folder with PNG images, same as for 
-> raw data), **<em>annotations</em>** (where each exam is an XML file), and **<em>labels</em>** (where each exam is a 
-> video folder with a TXT file per image... yeah, that was not memory-efficient).
 > - **_3-prepare-data2d.py_**: create **<em>data_directory/2d-split</em>** and populate its
 > **<em>train</em>** and **<em>test</em>** directories with 7 folders (named from **<em>0</em>** to **<em>6</em>**). 
 > Each folder contains only the PNG images passing the time sub-sampling procedure: we take both frames within a video
@@ -195,16 +96,6 @@ Results of each experiment are stored in the following folder:
 >> where weights are stored in "ckpt_best_loss.pth" file. Such files were obtained from those denoted as "old", which 
 >> are the ones provided in [this repository](https://github.com/rdroste/SonoNet_PyTorch) (same weights but not directly 
 >> compatible with our model definition).
->> SonoNet checkpoints:
->> - **<u>sononet2d-scratch-noreg</u>**: Weights of both SonoNet-16 (num_features=16) and SonoNet-64 (num_features=64) 
->> configurations trained from scratch on our dataset.
->> - **<u>sononet2d-pretrain-noreg</u>**: Weights of SonoNet-64 pretrained on FetalDB and fully fine-tuned on our dataset 
->> (num_features=64, pretrain_dir='./logs/weights4sononet/FetalDB')
->> - **<u>sononet2d-pretrain</u>**: Weights of SonoNet-64 pretrained on FetalDB and fully fine-tuned on our dataset 
->> using some regularization (num_features=64, pretrain_dir='./logs/weights4sononet/FetalDB', weight_decay=0.0001)
->> - **<u>sononet2d-pretrain-lastlayer</u>**: Weights of SonoNet-64 pretrained on FetalDB and with the classifier head 
->> (adaptation layer) fine-tuned on our dataset using some regularization (num_features=64, 
->> pretrain_dir='./logs/weights4sononet/FetalDB', weight_decay=0.0001, train_classifier_only=True)
 
 ------
 
