@@ -68,7 +68,7 @@ def ecomask(imgs: np.ndarray, margin: int = 20):
     return mask
 
 
-class EsaoteUSDatasetAdaptiveSubsample(Dataset):
+class USDatasetAdaptiveSubsample(Dataset):
     """
     Load each video from a given train/test set and return the sequence of non-redundant frames within it,
     together with all their labels and full paths of both images and labels.
@@ -120,7 +120,7 @@ class EsaoteUSDatasetAdaptiveSubsample(Dataset):
 def populate_2d_split(split_dir: str, res_dir: str, split: str = 'test'):
     
     data_dir = os.path.join(split_dir, split)
-    dataset_vid = EsaoteUSDatasetAdaptiveSubsample(data_dir, downsample=True)   
+    dataset_vid = USDatasetAdaptiveSubsample(data_dir, downsample=True)   
 
     
     classes = dataset_vid.classes
@@ -163,8 +163,8 @@ def populate_2d_split(split_dir: str, res_dir: str, split: str = 'test'):
     plt.savefig(os.path.join(split_dir, split + '-class-distribution.svg'))
     plt.close()
 
-#-split_dir '/data01/simone/data/us/liver/esaote/split'
-#-res_dir '/data02/simone/data/us/liver/esaote/2d-split'
+#-split_dir '/data/us/liver/esaote/split'
+#-res_dir 'data/us/liver/esaote/2d-split'
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-split_dir', type=str, help='Directory of the full dataset.')
