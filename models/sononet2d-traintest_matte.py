@@ -11,7 +11,7 @@ import argparse
 import glob
 from torch.utils.data import DataLoader
 from sononet2d.models import SonoNet2D
-from utils.datareader import EsaoteUSDataset2D
+from utils.datareader import USDataset2D
 from utils.datasplit import split2d_train_validation
 from utils.runner import NoGPUError, train, test
 from utils.visualize import plot_confusion, plot_history
@@ -107,9 +107,9 @@ def main():
     
     print("seed for split: ", args.seed)
     train_paths, val_paths = split2d_train_validation(args.data_dir, valid_split=args.validation_split, verbose = True, random_seed=args.seed)
-    train_dataset = EsaoteUSDataset2D(root=args.data_dir, img_paths=train_paths, split="train",
+    train_dataset = USDataset2D(root=args.data_dir, img_paths=train_paths, split="train",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS, augmentation=args.augmentation)
-    val_dataset = EsaoteUSDataset2D(root=args.data_dir, img_paths=val_paths, split="val",
+    val_dataset = USDataset2D(root=args.data_dir, img_paths=val_paths, split="val",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
 
     class_counts = train_dataset.samples_per_class
@@ -161,7 +161,7 @@ def main():
     # Load testing dataset -------------------------------------------------------------------------#
     print('\nLoading test data...')
     test_paths =  sorted(glob.glob(os.path.join(os.path.join(args.data_dir, 'test'), '*', '*.png')))
-    test_dataset = EsaoteUSDataset2D(root=args.data_dir, img_paths=test_paths, split="test",
+    test_dataset = USDataset2D(root=args.data_dir, img_paths=test_paths, split="test",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
     test_loader = DataLoader(dataset=test_dataset, shuffle=False, batch_size=args.batch_size, pin_memory=True, num_workers=4)
 

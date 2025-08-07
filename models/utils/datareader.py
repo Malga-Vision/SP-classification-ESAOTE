@@ -33,7 +33,7 @@ def samples_per_class_2d(imgs_paths, classes):
     return np.array(list(class_counts_dict.values()))
 
 
-class EsaoteUSDataset2D(Dataset):
+class USDataset2D(Dataset):
 
     def __init__(self, root: str, img_paths, split: str, transformations: list = None,
                  in_channels: int = 1, img_size: List[int] = [256, 256], augmentation: bool = False,
@@ -89,7 +89,7 @@ class EsaoteUSDataset2D(Dataset):
     def __len__(self):
         return self.num_samples
     
-class EsaoteUSDataset2D_comparable_3d(Dataset):
+class USDataset2D_comparable_3d(Dataset):
 
     def __init__(self, root: str, img_paths, split: str, transformations: list = None,
                  in_channels: int = 1, img_size: List[int] = [256, 256], augmentation: bool = False,
@@ -151,7 +151,7 @@ class EsaoteUSDataset2D_comparable_3d(Dataset):
 
 
 
-class EsaoteUSDataset3D(Dataset):
+class USDataset3D(Dataset):
     def __init__(self, root: str, clips_paths, split: str, transformations: list = None,
                  in_channels: int = 1, img_size: List[int] = [256, 256],
                  gamma_minmax: tuple = (0.7, 1.4), resize_minmax: tuple = (0.8, 1.2), rotation_range: int = 10,

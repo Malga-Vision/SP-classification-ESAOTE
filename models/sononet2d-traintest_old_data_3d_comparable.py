@@ -11,9 +11,8 @@ import argparse
 import glob
 from torch.utils.data import DataLoader
 from sononet2d.models import SonoNet2D
-from vgg16.models import VGG16Classifier
-from utils.datareader import EsaoteUSDataset2D_comparable_3d
-from utils.datasplit import split2d_train_validation, split3d_train_validation, split_videos_in_clips
+from utils.datareader import USDataset2D_comparable_3d
+from utils.datasplit import split3d_train_validation, split_videos_in_clips
 from utils.runner import NoGPUError, train, test
 from utils.visualize import plot_confusion, plot_history
 from collections import Counter
@@ -101,9 +100,9 @@ def main():
     train_paths = [p[int(args.clip_len / 2)] for p in train_clips]
     val_paths = [p[int(args.clip_len / 2)] for p in val_clips]
     
-    train_dataset = EsaoteUSDataset2D_comparable_3d(root=args.data_dir, img_paths=train_paths, split="train",
+    train_dataset = USDataset2D_comparable_3d(root=args.data_dir, img_paths=train_paths, split="train",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS, augmentation=args.augmentation)
-    val_dataset = EsaoteUSDataset2D_comparable_3d(root=args.data_dir, img_paths=val_paths, split="val",
+    val_dataset = USDataset2D_comparable_3d(root=args.data_dir, img_paths=val_paths, split="val",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
 
     class_counts = train_dataset.samples_per_class
@@ -159,7 +158,7 @@ def main():
     test_clips = split_videos_in_clips(test_paths, args.data_dir, clip_size=args.clip_len)
     test_paths = [p[int(args.clip_len / 2)] for p in test_clips]
     
-    test_dataset = EsaoteUSDataset2D_comparable_3d(root=args.data_dir, img_paths=test_paths, split="test",
+    test_dataset = USDataset2D_comparable_3d(root=args.data_dir, img_paths=test_paths, split="test",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
     test_loader = DataLoader(dataset=test_dataset, shuffle=False, batch_size=args.batch_size, pin_memory=True, num_workers=4)
 

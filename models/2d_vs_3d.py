@@ -1,6 +1,6 @@
 from sononet2d.models import SonoNet2D
 from sononet3d.models import SonoNet3D, SonoNet3D_2_1d
-from utils.datareader import EsaoteUSDataset3D, EsaoteUSDataset2D
+from utils.datareader import USDataset2D
 import os
 import argparse
 import torch
@@ -86,7 +86,7 @@ class Normalize:
         return torch.where(torch.isnan(image), torch.zeros_like(image), image)
     
 
-class EsaoteUSDataset3D(Dataset):
+class USDataset3D(Dataset):
     def __init__(self, root: str, clips_paths, in_channels: int = 1, img_size: List[int] = [256, 256]):   
         
         self.clips_paths = clips_paths         
@@ -193,7 +193,7 @@ def main():
         ##################### 2D #############################
         frame_paths_2d = frame_paths[start_frame_index:]
        
-        video_dataset_2d = EsaoteUSDataset2D(root=args.data_dir, img_paths=frame_paths_2d,
+        video_dataset_2d = USDataset2D(root=args.data_dir, img_paths=frame_paths_2d,
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS, split='test')
 
         video_loader_2d = DataLoader(dataset=video_dataset_2d, shuffle=False, batch_size=args.batch_size, pin_memory=True, num_workers=4)
@@ -209,7 +209,7 @@ def main():
         ##################### 3D #############################
         video_clips = split_video_in_clips(frame_paths, args.clip_len)
 
-        video_dataset_3d = EsaoteUSDataset3D(root=args.data_dir, clips_paths=video_clips,
+        video_dataset_3d = USDataset3D(root=args.data_dir, clips_paths=video_clips,
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
         video_loader_3d = DataLoader(dataset=video_dataset_3d, shuffle=False, batch_size=args.batch_size, pin_memory=True, num_workers=4)
 

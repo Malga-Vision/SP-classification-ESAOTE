@@ -11,7 +11,7 @@ import argparse
 import glob
 from torch.utils.data import DataLoader
 from sononet3d.models import SonoNet3D, SonoNet3D_2_1d
-from utils.datareader import EsaoteUSDataset3D
+from utils.datareader import USDataset3D
 from utils.datasplit import split3d_train_validation, split_videos_in_clips
 from utils.runner import NoGPUError, train_3d, test_3d
 from utils.visualize import plot_confusion, plot_history
@@ -110,9 +110,9 @@ def main():
     print('\nLoading training data...')
 
     train_clips, val_clips = split3d_train_validation(args.data_dir, valid_split=args.validation_split, clip_size=args.clip_len, verbose = True,random_seed=args.seed)
-    train_dataset = EsaoteUSDataset3D(root=args.data_dir, clips_paths=train_clips, split="train",
+    train_dataset = USDataset3D(root=args.data_dir, clips_paths=train_clips, split="train",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS, augmentation=args.augmentation)
-    val_dataset = EsaoteUSDataset3D(root=args.data_dir, clips_paths=val_clips, split="val",
+    val_dataset = USDataset3D(root=args.data_dir, clips_paths=val_clips, split="val",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
 
 
@@ -177,7 +177,7 @@ def main():
     test_dirs =  sorted(glob.glob(os.path.join(args.data_dir, 'test', 'videos', '*')))
     test_paths = list(map(lambda p: sorted(glob.glob(os.path.join(p, '*.png'))), test_dirs))
     test_clips = split_videos_in_clips(test_paths, args.data_dir, clip_size=args.clip_len)
-    test_dataset = EsaoteUSDataset3D(root=args.data_dir, clips_paths=test_clips, split="test",
+    test_dataset = USDataset3D(root=args.data_dir, clips_paths=test_clips, split="test",
                                       img_size=IMG_SIZE, in_channels=NUM_CHANNELS)
     test_loader = DataLoader(dataset=test_dataset, shuffle=False, batch_size=args.batch_size, pin_memory=True, num_workers=1)
 
