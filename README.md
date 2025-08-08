@@ -31,13 +31,13 @@ potentially leading to best results.
 
 The project is divided into 2 folders:
 
-- **<u>data</u>**: prepare data for 2D and 3D model training starting from the raw US dataset.
+- **<u>data</u>**: prepare data for 2D model training starting from the raw US dataset.
 - **<u>models</u>**: define and train 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions.
 
 Let's see them in more detail:
 Scripts must be executed in the following order:
 
-> - **_3-prepare-data2d.py_**: create **<em>data_directory/2d-split</em>** and populate its
+> - **_prepare-data2d.py_**: create **<em>data_directory/2d-split</em>** and populate its
 > **<em>train</em>** and **<em>test</em>** directories with 7 folders (named from **<em>0</em>** to **<em>6</em>**). 
 > Each folder contains only the PNG images passing the time sub-sampling procedure: we take both frames within a video
 > sequence for which the SSIM value is lower than the average SSIM throughout the whole video.
@@ -84,14 +84,9 @@ Such scripts use code from the following Python packages:
 
 Results of each experiment are stored in the following folder:
 
-> **<u>logs</u>**:
-> This folder contains weights of all trained models, as well as test evaluation results and confusion matrices plots.
-> Note: for all experiments on our dataset, the following parameters have been tweaked from their default values 
-> (unless differently specified): batch_size=128, lr=0.001, max_num_epochs=100, (early-stopping) patience=10, lr_sched_patience=4. 
-> Also note that this folder has not been uploaded on GitHub due to its large size, but it is available on the server.
->> 
+> **<u>logs</u>** / **<u>weights4sononet2d</u>** / **<u>FetalDB</u>**:
 >> SonoNet pre-trained weights:
->> - **<u>weights4sononet2d</u>** / **<u>FetalDB</u>**: pretrained weights of all SonoNet configurations (16, 32, and 64 initial 
+>> - : pretrained weights of all SonoNet configurations (16, 32, and 64 initial 
 >> features) from the FetalDB dataset. Each configuration has its own folder (SonoNet-16, SonoNet-32, and SonoNet-64) 
 >> where weights are stored in "ckpt_best_loss.pth" file. Such files were obtained from those denoted as "old", which 
 >> are the ones provided in [this repository](https://github.com/rdroste/SonoNet_PyTorch) (same weights but not directly 
