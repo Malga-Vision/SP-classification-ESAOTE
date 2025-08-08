@@ -4,11 +4,9 @@ import pickle
 import numpy as np
 import torch.nn as nn
 import torch.optim as optim
-#from tensorboardX import SummaryWriter
-from .iterators import train_epoch, validation_epoch, testing_epoch, save_checkpoint, load_checkpoint, train_epoch_3d, validation_epoch_3d, testing_epoch_3d, validation_epoch_3d_2, testing_epoch_3d_2,  train_epoch_3d_2
+from .iterators import train_epoch, validation_epoch, testing_epoch, save_checkpoint, load_checkpoint, train_epoch_3d, validation_epoch_3d, testing_epoch_3d
 from tqdm import tqdm
 from typing import Union
-from sononet2d.models import SonoNet2D
 
 class NoGPUError(Exception):
     pass

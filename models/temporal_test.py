@@ -18,21 +18,7 @@ from matplotlib.patches import Rectangle
 
 
 IMG_SIZE = [256, 256]
-NUM_CHANNELS = 1
-
-
-### python temporal_test.py -data_dir '/data01/simone/data/us/liver/esaote/split/' 
-###                         -model_dir_2d './logs/sononet2d-pretrained-15-blocks-freeze-sampler-augmentation/SonoNet-32/1e-05-128-adam/' 
-###                         -model_dir_3d './logs/sononet3d-sampler-weight-decay-augmenation-length-10-new/SonoNet-32/0.0001-16-adam/' 
-#                           -num_features 32 -batch_size 32 -gpu 1 -clip_len 10
-
-
-### python temporal_test.py -data_dir '/data01/simone/data/us/liver/esaote/split/' 
-###                         -model_dir_2d './logs/pretrained/sononet2d-pretrained-sampler-augmentation-new/SonoNet-32/1e-05-128-adam/' 
-###                         -model_dir_3d './logs/3d/sononet3d-sampler-weight-decay-augmenation-length-5-new/SonoNet-32/0.0001-16-adam/' 
-###                         -model_dir_2_1d './logs/2d1d/sononet2d1d-sampler-weight-decay-augmenation-length-5-new/SonoNet-32/0.0001-16-adam/'
-###                         -gpu 0 
-###                         -clip_len 5 
+NUM_CHANNELS = 1 
 
 
 def parse_args():

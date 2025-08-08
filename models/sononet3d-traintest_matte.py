@@ -30,7 +30,7 @@ This is a PyTorch implementation of the SonoNet 3D model for ultrasound image cl
 -----
 '''
 
-IMG_SIZE = [256, 256]  # original size is [760, 1200]
+IMG_SIZE = [256, 256]  
 NUM_CHANNELS = 1
 
 

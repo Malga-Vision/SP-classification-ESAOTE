@@ -23,7 +23,7 @@ from sklearn.metrics import classification_report
 
 
 
-IMG_SIZE = [224, 224]#[256, 256]  # original size is [760, 1200]
+IMG_SIZE = [256, 256]
 NUM_CHANNELS = 3
 
 

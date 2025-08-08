@@ -10,8 +10,8 @@ from torch.utils.data import random_split
 
 def splitter(all_infos: pd.DataFrame, exams_per_patient: list, val_split: float, verbose: bool = False, random_seed: int = None):
     """
-    We put in the validation set the last val_split % of patients (in chronological order and having all 5 scans
-    expected in the protocol) from all 4 clinical centers (Aquila, Firenze, Palermo, Sassari). All the remaining data
+    We put in the validation set the last val_split % of patients (having all 5 scans
+    expected in the protocol) from all 4 clinical centers. All the remaining data
     goes in the training set.
     """
 

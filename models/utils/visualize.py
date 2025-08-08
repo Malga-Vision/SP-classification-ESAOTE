@@ -16,7 +16,6 @@ def plot_confusion(predictions: list, targets: list, num_classes: int, class_nam
     confmat = ConfusionMatrix(task="multiclass", num_classes=num_classes)
     matrix = confmat(torch.Tensor(predictions), torch.Tensor(targets)).double()
 
-    # normalize confusion matrix   
     for i in range(num_classes):
         # M[i,j] stands for element of real class i that was classified as j
         sum = torch.sum(matrix[i, :])
@@ -28,7 +27,6 @@ def plot_confusion(predictions: list, targets: list, num_classes: int, class_nam
         label_list = range(num_classes)
     df_cm = pd.DataFrame(matrix, label_list, label_list)
 
-    # matrix of bool values, True if different from Zero
     annot_pd = df_cm.map(lambda x: "{:.2%}".format(x) if round(x, 3) != 0.000 else '0.00')
 
     mean_acc = torch.diag(matrix).sum() / num_classes
@@ -50,11 +48,10 @@ def plot_confusion(predictions: list, targets: list, num_classes: int, class_nam
 def plot_history(file_path, log_dir = None, fname_suffix: str or None = None, format: str = 'png'): # type: ignore
     if not fname_suffix:
         fname_suffix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
-    # Load data from the pickle file
+
     with open(file_path, 'rb') as file:
         history = pickle.load(file)
 
-    # Plotting training and validation loss
     plt.figure(figsize=(12, 6))
 
     plt.subplot(1, 2, 1)
@@ -66,7 +63,6 @@ def plot_history(file_path, log_dir = None, fname_suffix: str or None = None, fo
     plt.grid()
     plt.legend()
   
-    # Plotting training and validation accuracy
     plt.subplot(1, 2, 2)
     plt.plot(history['accuracy'], label='Training Accuracy')
     plt.plot(history['val_accuracy'], label='Validation Accuracy')
