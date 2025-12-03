@@ -119,6 +119,7 @@ def split2d_train_validation(info_path, valid_split: float = 0.2, verbose = Fals
             f'{len(train_indices)} samples while the validation set of {len(valid_indices)}. '
             f'Hence actual validation split is {int(len(valid_indices)/len(img_paths)*100)} %.')
 
+    # Return lists of paths to images
     return train_paths, valid_paths
 
 
@@ -159,6 +160,8 @@ def split3d_train_validation(info_path, valid_split: float = 0.2, clip_size: int
             f'- Validation set composed of {len(valid_clips)} clips\n'
             f'Hence actual validation split is {int(len(valid_clips)/(len(valid_clips) + len(train_clips))*100)} %.')
 
+
+    # Return lists of clips, where each clip is a list of paths to frames
     return train_clips, valid_clips
 
 

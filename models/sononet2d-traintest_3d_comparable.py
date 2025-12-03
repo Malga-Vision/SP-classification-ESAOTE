@@ -95,7 +95,6 @@ def main():
     
     print("seed for split: ", args.seed)
     train_clips, val_clips = split3d_train_validation(args.data_dir, valid_split=args.validation_split, clip_size=args.clip_len, verbose = True, random_seed=args.seed)
-    print(train_clips[0])
     
     train_paths = [p[int(args.clip_len / 2)] for p in train_clips]
     val_paths = [p[int(args.clip_len / 2)] for p in val_clips]

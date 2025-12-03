@@ -28,22 +28,8 @@ potentially leading to best results.
 ------
 
 ## Code Organization
-
-The project is divided into 2 folders:
-
-- **<u>data</u>**: prepare data for 2D model training starting from the raw US dataset.
-- **<u>models</u>**: define and train 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions.
-
-Let's see them in more detail:
-Scripts must be executed in the following order:
-
-> - **_prepare-data2d.py_**: create **<em>data_directory/2d-split</em>** and populate its
-> **<em>train</em>** and **<em>test</em>** directories with 7 folders (named from **<em>0</em>** to **<em>6</em>**). 
-> Each folder contains only the PNG images passing the time sub-sampling procedure: we take both frames within a video
-> sequence for which the SSIM value is lower than the average SSIM throughout the whole video.
-
 ### **<u>models</u>**
-This folder contains main scripts for running experiments with different models. See the "usage" note at the beginning 
+This folder contains main scripts to define and train 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions. See the "usage" note at the beginning 
 of each of them.
 > - **_sononet2d-traintest.py_**: train and test the 2D SonoNet-16/32/64 model.
 > - **_sononet2d-traintest_3d_comparable.py_**: trains and evaluates the 2D SonoNet-16/32/64 model using the same dataset as the 3D models for direct comparison.
@@ -62,6 +48,10 @@ Such scripts use code from the following Python packages:
 >> - **_runner.py_**: defines train and test functions.
 >> - **_visualize.py_**: defines a useful function for plotting a confusion matrix and saving it as a PNG image.
 >
+>> **_IMPORTANT: _** Change the method **split3d_train_validation** and **split2d_train_validation** based on your data and needs.
+>> 
+>
+> The data 
 > **<u>sononet2d</u>**:
 > This folder contains the 2D implementation of the SonoNet-16/32/64 model.
 >> - **_models.py_**: defines the SonoNet2D class. The number of features in the hidden layers of the network can be 
@@ -88,6 +78,74 @@ Such scripts use code from the following Python packages:
 > where weights are stored in "ckpt_best_loss.pth" file. Such files were obtained from those denoted as "old", which 
 > are the ones provided in [this repository](https://github.com/rdroste/SonoNet_PyTorch) (same weights but not directly 
 > compatible with our model definition).
+
+## Data Organization
+To run the experiments correctly, the dataset directory must follow the structure below:
+```
+data/
+│
+├── classes.json
+│
+├── train/
+│   ├── labels/
+│   │   ├── <video_name_1>/
+│   │   │   ├── <video_name_1>_<frame_idx>.txt
+│   │   │   ├── <video_name_1>_<frame_idx>.txt
+│   │   │   └── ...
+│   │   └── <video_name_2>/
+│   │       └── ...
+│   │
+│   └── videos/
+│       ├── <video_name_1>/
+│       │   ├── <video_name_1>_<frame_idx>.<ext>
+│       │   ├── <video_name_1>_<frame_idx>.<ext>
+│       │   └── ...
+│       └── <video_name_2>/
+│           └── ...
+│
+└── test/
+    ├── labels/
+    │   ├── <video_name_1>/
+    │   │   ├── <video_name_1>_<frame_idx>.txt
+    │   │   ├── <video_name_1>_<frame_idx>.txt
+    │   │   └── ...
+    │   └── <video_name_2>/
+    │       └── ...
+    │
+    └── videos/
+        ├── <video_name_1>/
+        │   ├── <video_name_1>_<frame_idx>.<ext>
+        │   ├── <video_name_1>_<frame_idx>.<ext>
+        │   └── ...
+        └── <video_name_2>/
+            └── ...
+```
+### Folder Details
+- classes.json
+
+    This file must be located directly inside the data/ directory.
+    It contains a dictionary where:
+        
+    - each key is a class name (string),
+
+    - each value is a unique integer ID.
+- labels/
+
+    Contains one subfolder per video, named exactly as the video.
+    Each subfolder includes one .txt file per frame.
+    File naming format:
+    <video_name>_<frame_idx>.txt
+
+- videos/
+
+    Contains one subfolder per video, using the same video name as in labels/.
+
+    Each subfolder includes all frames of the video.
+
+    File naming format matches the labels:
+
+    <video_name>_<frame_idx>.png
+
 
 ------
 
