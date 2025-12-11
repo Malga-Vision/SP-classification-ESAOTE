@@ -2,7 +2,7 @@
 
 The goal of this project is to propose a method to automatically detect and classify standard planes (SP)
 in liver ultrasound (US) videos. The operator - commonly a nurse - should detect the most informative images 
-within each US video, in order to later provide them to physicians for diagnostic purposes. Such frames are known as 
+within each US video, to later provide them to physicians for diagnostic purposes. Such frames are known as 
 standard planes and are identified by the presence of specific anatomical structures within the image. 
 Given the nature of this imaging technique (being highly noisy and subject to device settings and manual skills of 
 the operator) and the resulting challenge of recognising anatomical structures (often not clearly visible even by expert 
@@ -12,15 +12,14 @@ one aspect that seems to aid expert users is the temporal evolution of the data 
 for the automatic classification SP from single frames and sequences of frames within US videos.  
 
 We start by following a 2D approach with a 2D CNN architecture named SonoNet [[1]](#1), which proved to achieve 
-state-of-the-art results on US fetal standard plane detection task. As a first approach concerning the usage of time information, 
-instead, we propose to employ a 3D CNN model in order to exploit both spatial and temporal information on a short timescale. 
+state-of-the-art results on the US fetal standard plane detection task. As a first approach concerning the usage of time information, 
+instead, we propose to employ a 3D CNN model to exploit both spatial and temporal information on a short timescale. 
 Specifically, we implemented a 3D extension of the mentioned SonoNet architecture. Extending convolutions 
 to the third (temporal) domain should aid the network in solving ambiguous situations where some parts of the anatomical 
 structures are not clearly visible (or partly occluded) within a single frame, though they could appear in nearby frames.
 Based on [[2]](#2) we also implemented SonoNet(2+1)D model. It is a 3D version of SonoNet2D, but each 2D convolution layers
-is replaced with a SpatioTemporal block, which consists of 2D convolution layer followed by a 1D convolution layer.
-In this way, we have a model which is comparable to the SonoNet2D, in terms of trainable parameters, but with a number of non-linear operations which is double with respect to the 3D model, 
-potentially leading to the best results. 
+is replaced with a SpatioTemporal block, which consists of a 2D convolution layer followed by a 1D convolution layer.
+In this way, we have a model which is comparable to the SonoNet2D, in terms of trainable parameters, but with a number of non-linear operations that is double with respect to the 3D model, potentially leading to the best results. 
 
 
 ------
@@ -56,8 +55,8 @@ Such scripts use code from the following Python packages:
 > This folder contains the 2D implementation of the SonoNet-16/32/64 model.
 >> - **_models.py_**: defines the SonoNet2D class. The number of features in the hidden layers of the network can be 
 >> set by choosing between 3 configurations (16, 32, and 64). The network may be used in "classification mode."
->> (the adaptation layer gives the output) or for "feature extraction" (no adaptation layer is defined and the 
->> output is the set of features in the last convolutional layer): this last functionality is achieved by setting the 
+>> (the adaptation layer gives the output) or for "feature extraction" (no adaptation layer is defined, and the 
+>> output is the set of features in the last convolutional layer. This last functionality is achieved by setting the 
 >> _features_only_ parameter to True (useful to check on which image parts the network is focusing its attention). 
 >> Finally, by setting the _train_classifier_only_ parameter to True, it is possible to freeze learning in all 
 >> convolutional layers (only the adaptation layer will be trained).
@@ -93,10 +92,10 @@ Such scripts use code from the following Python packages:
 >   if you want use **_SoneNet (2+1)D_** version add to the command line the argument **_--modify_3d_**
 > - **_temporal_test.py_**:
 > 
-> - > ```python temporal_test.py -data_dir 'path_to_data' -log_dir 'logs/temporal_test' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2_1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10```
+>  ```python temporal_test.py -data_dir 'path_to_data' -log_dir 'logs/temporal_test' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2_1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10```
 > - **_2d_vs_3d_**:
 >   
-> ```python 2d_vs_3d.py -data_dir 'path_to_data' -log_dir 'logs/2d_vs_3d' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2d1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128```
+>  ```python 2d_vs_3d.py -data_dir 'path_to_data' -log_dir 'logs/2d_vs_3d' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2d1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128```
  
 
 
