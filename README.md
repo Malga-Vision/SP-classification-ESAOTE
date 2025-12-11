@@ -29,7 +29,7 @@ potentially leading to the best results.
 
 ## Code Organization
 ### **<u>models</u>**
-This folder contains main scripts to define and train 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions. See the "usage" note at the beginning 
+This folder contains the main scripts for defining and training 2D-SonoNet architectures, as well as 3D-SonoNet and (2+1)D-SonoNet extensions. See the "usage" note at the beginning 
 of each of them.
 > - **_sononet2d-traintest.py_**: train and test the 2D SonoNet-16/32/64 model.
 > - **_sononet2d-traintest_3d_comparable.py_**: trains and evaluates the 2D SonoNet-16/32/64 model using the same dataset as the 3D models for direct comparison.
@@ -40,10 +40,10 @@ of each of them.
 Such scripts use code from the following Python packages:
 
 > **<u>utils</u>**:
-> This folder contains python files with many general-purpose utility functions.
+> This folder contains Python files with many general-purpose utility functions.
 >> - **_augments.py_**: defines data augmentation methods for US images.
 >> - **_datareader.py_**: defines a class for loading either the 2D or the 3D version of our dataset.
->> - **_datasplit.py_**: defines functions for splitting the dataset into training and validation sets. 
+>> - **_datasplit.py_**: defines functions for splitting the dataset into training and validation sets. Note that the splitting logic is tailored to our specific scenario, so using your own custom split method is recommended. 
 >> - **_iterators.py_**: define basic training and testing loops for a single epoch.
 >> - **_runner.py_**: defines train and test functions.
 >> - **_visualize.py_**: defines a useful function for plotting a confusion matrix and saving it as a PNG image.
@@ -56,7 +56,7 @@ Such scripts use code from the following Python packages:
 > This folder contains the 2D implementation of the SonoNet-16/32/64 model.
 >> - **_models.py_**: defines the SonoNet2D class. The number of features in the hidden layers of the network can be 
 >> set by choosing between 3 configurations (16, 32, and 64). The network may be used in "classification mode."
->> (the output is given by the adaptation layer) or for "feature extraction" (no adaptation layer is defined and the 
+>> (the adaptation layer gives the output) or for "feature extraction" (no adaptation layer is defined and the 
 >> output is the set of features in the last convolutional layer): this last functionality is achieved by setting the 
 >> _features_only_ parameter to True (useful to check on which image parts the network is focusing its attention). 
 >> Finally, by setting the _train_classifier_only_ parameter to True, it is possible to freeze learning in all 
@@ -82,21 +82,21 @@ Such scripts use code from the following Python packages:
 ## Command line examples
 > - **_sononet2d-traintest.py_**:
 >   
->   ```python sononet2d-traintest.py -data_dir 'path_to_2d_data' -log_dir 'logs/sononet2d' -gpu 0 -num_features 32 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
+>   ```python sononet2d-traintest.py -data_dir 'path_to_data' -log_dir 'logs/sononet2d' -gpu 0 -num_features 32 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
 > - **_sononet2d-traintest_3d_comparable.py_**:
 >   
->   ```python sononet2d-traintest_3d_comparable.py -data_dir 'path_to_3d_data' -log_dir 'logs/sononet2d_3d_comparable' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
+>   ```python sononet2d-traintest_3d_comparable.py -data_dir 'path_to_data' -log_dir 'logs/sononet2d_3d_comparable' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
 > - **_sononet3d-traintest.py_**:
 >   
->   ```python sononet3d-traintest.py -data_dir 'path_to_3d_data' -log_dir 'logs/sononet3d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
+>   ```python sononet3d-traintest.py -data_dir 'path_to_data' -log_dir 'logs/sononet3d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128 -lr 0.00001 -max_num_epochs 200 -patience 10 -lr_sched_patience 4 -weight_decay 0.0001 -seed 21 --sampler --augmentation```
 >   
 >   if you want use **_SoneNet (2+1)D_** version add to the command line the argument **_--modify_3d_**
 > - **_temporal_test.py_**:
 > 
-> - > ```python temporal_test.py -data_dir 'path_to_3d_data' -log_dir 'logs/temporal_test' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2_1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10```
+> - > ```python temporal_test.py -data_dir 'path_to_data' -log_dir 'logs/temporal_test' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2_1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10```
 > - **_2d_vs_3d_**:
 >   
-> ```python 2d_vs_3d.py -data_dir 'path_to_3d_data' -log_dir 'logs/2d_vs_3d' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2d1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128```
+> ```python 2d_vs_3d.py -data_dir 'path_to_data' -log_dir 'logs/2d_vs_3d' -model_dir_2d 'logs/sononet2d_3d_comparable' -model_dir_3d 'logs/sononet3d' -model_dir_2d1d 'logs/sononet_2_1d' -gpu 0 -num_features 32 -clip_len 10 -batch_size 128```
  
 
 
